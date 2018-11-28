@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <title>Questions</title>
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- Angular Js CDN Link -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script type="text/JavaScript">
+        var app = angular.module('myApp', []);
+        app.controller("QuestionsController", function($scope, $http) {
+            $scope.QuesitionsList = [];
+            $http.get("questions")
+                .then(function(response) {
+                    $scope.QuesitionsList =response.data;
+                });
+
+            $scope.SubmitAnswers = function(){
+                $($scope.QuesitionsList).each(function(i, question){
+                    $http.post("answers", {"quesid" : question.quesid, "yourans" : question.yourans})
+                        .then(function(response) {
+                            console.log(response.data);
+                        });
+                });                
+            };
+        });
+    </script>
+</head>
+
+<body>    
+    <div class="container">      
+        <div ng-app="myApp" ng-controller="QuestionsController">
+            <div class="bs-example" data-example-id="panel-without-body-with-table">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Question Paper</div>
+                    <table class="table" ng-repeat="question in QuesitionsList">
+                        <tbody>                  
+                            <tr>
+                                <th ng-bind="question.quesid"></th>
+                                <th colspan="4" ng-bind="question.ques"></th>
+                            </tr>
+                            <tr ng-repeat="option in question.options">
+                                <th ng-bind="question.yourans"></th>
+                                <td><input type="radio" ng-value="option.op1" ng-model="question.yourans" /> <span ng-bind="option.op1" /></td>
+                                <td><input type="radio" ng-value="option.op2" ng-model="question.yourans" /> <span ng-bind="option.op2" /></td>
+                                <td><input type="radio" ng-value="option.op3" ng-model="question.yourans" /> <span ng-bind="option.op3" /></td>
+                            </tr>        
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <input type="button" value="Submit" ng-click="SubmitAnswers()" />
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div> 
+    
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>   
+</body
+</html>
